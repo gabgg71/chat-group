@@ -1,98 +1,55 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 import { NewChannel } from './NewChannel';
+import { Channels } from './Channels';
 import { userContext } from '../hooks/userContext';
 
 export const Chat = () => {
-    const navigate = useNavigate();
+    let [channels, setChannels] = useState(store.getState().channel);
+    let [focusCh, setFocus] = useState({
+        "name": "WELCOME",
+        "messages": []});
+    
+    
     let [user, _] = useState(store.getState().info);
-    //let [channels, setChannels] = useState(store.getState().channel);
-    const [open, setOpen] = useState(false);
-    const [vent, setVent] = useState(true);
+    const {socket} = useContext(userContext);
     const {cambiaTema } = useContext(userContext);
-    let [canales, setCanales] = useState(["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"])
-    let originalC = ["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"]
-    let mensajes = ["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"]
+    let [newCanal, setNew] = useState(true);
+    
+    let escribir = document.querySelector(".write");
 
+    useEffect(() => {
+        escribir = document.querySelector(".write");
+        setFocus(channels.filter(channel => channel.name === "WELCOME"));
+    }, []);
 
-    const busca=(e)=>{
-        setCanales(originalC.filter((canal)=>{
-            return canal.includes(e.target.value)
-        }))
+    const enviarMensaje=(channel)=>{
+        if(escribir.value.lenght >0){
+            socket.emit(
+                'send_message',
+                {channel: `channel${channel}`, msg:escribir.value, user:{name: user.name, img: user.img}},
+              );
+            escribir.value = "";
+        }
     }
+    
+
+    
 
     return (
         <>
-        
+        {true && <p>Hola</p>}
         <button className='theme' onClick={cambiaTema}><span class="material-icons">
         highlight
         </span></button>
         <div className="chat2">
-        <div className="channels">
-            <div className="canal">
-                <p>Channels</p>
-                <button className="create mas" onClick={()=>{setVent(true)}}>
-                <span class="material-icons">
-                add
-                </span>
-                </button>
-            </div>
-            <input className="buscar" placeholder="Search" onChange={busca}></input>
-            <div className="nombre-c">
-                {canales.map((canal, index)=>{
-                    return(
-                        <div className="canal" key={index}>
-                            <div className="short">
-                                <p>SS</p>
-                            </div>
-                            <p>{canal}</p>
-                        </div>
-                    )
-                })}
-            </div>
+            <Channels setNew={setNew} setFocus={setFocus}/>
 
-        </div>
-        
-        <NewChannel setVent={setVent} />
-        {open && (
-          <div className="options2">
-            <button className="inline" onClick={()=>{navigate("/profile", {replace:true})}}>
-            <span class="material-icons">account_circle</span>
-            <p>
-              My profile
-            </p>
-            </button>
-            <button className="inline">
-            <span class="material-icons material-symbols-outlined">
-            landscape
-            </span>
-            <p>
-              Tweeter
-            </p>
-            </button>
-            <p className='line'>________________</p>
-            <button className="inline red" onClick={()=>{window.location.href = "/";}}>
-            <span class="material-icons">logout</span>
-            <p>
-              Logout
-            </p>
-            </button>
-          </div>
-        )}
-            <div className='down'>
-                    <img src={user.img} className='show'></img>
-                    <p>{user.name}</p>
-                    <button className='create' onClick={()=>{setOpen(!open)}}>
-                        <span class="material-icons material-symbols-outlined">
-arrow_drop_down
-</span></button>
-
-            </div>
         <div className="chat">
-            <p className='name'>frolgnfdhb hjsdkfksdb</p>
+            <p className='name'>{focusCh.name}</p>
             <div className='conversacion'>
-                {mensajes.map((mensaje, index)=>{
+                {(focusCh.messages)?(focusCh.messages.map((mensaje, index)=>{
                     return(
                         <div className='canal' key={index}>
                             <img src={user.img} className='show'></img>
@@ -105,13 +62,14 @@ arrow_drop_down
                             </div>
                         </div>
                     )
-                })}
+                })):(null)}
                 
             </div>
             <div className='enviar'>
             <div className='position'>
             <input className='write' placeholder='Type a message here'></input>
-            <button className='btn-enviar'>
+            <button className='btn-enviar' onClick={
+                enviarMensaje}>
             <span class="material-icons material-symbols-outlined">
 send
 </span>
@@ -122,6 +80,7 @@ send
 
         </div>
         </div>
+       
         
         </>
     );

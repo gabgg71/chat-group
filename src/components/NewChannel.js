@@ -3,7 +3,7 @@ import { startAddChannel } from '../actions/channel';
 import {store} from '../store/store.js';
 import React, { useEffect, useState } from 'react';
 
-export const NewChannel = ({setVent}) => {
+export const NewChannel = ({setNew}) => {
     let [user, _] = useState(store.getState().info);
     let name = undefined;
     let description = undefined;
@@ -15,18 +15,13 @@ export const NewChannel = ({setVent}) => {
     }, []);
 
     const crearCanal =()=>{
+        console.log(name.value.toUpperCase(), description.value, user._id)
        dispatch( startAddChannel({name: name.value, description: description.value, admin: user._id}))
-       /* let resp= fetchSinToken("create", {name: name.value, description: description.value}, "POST")
-        if(resp.ok){
-            
-        }else{
-            Swal.fire('Error', "It was not possible to create the channel", 'error');
-        }*/
     }
 
     return (
         <div className="newc">
-            <button onClick={setVent(false)} className="btn-cerrar">x</button>
+            <button onClick={setNew(false)} className="btn-cerrar">x</button>
             <p>NEW CHANNEL</p>
             <input placeholder="Channel name" className='nombrec'></input>
             <textarea placeholder="Channel Description" className='descrc'></textarea>

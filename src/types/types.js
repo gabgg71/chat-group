@@ -7,6 +7,7 @@ export const types = {
     bio: '[info] Edit bio',
     phone: '[info] Edit phone',
     email: '[info] Edit email',
+    loadChannels:'[channel] Load',
     createChannel: '[channel] Create',
     deleteChannel: '[channel] Delete',
 

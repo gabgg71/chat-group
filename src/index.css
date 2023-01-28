@@ -207,6 +207,12 @@ body{
 
 }
 
+.cha{
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+}
+
 .header{
   display: flex;
   flex-direction: row;
@@ -220,6 +226,7 @@ body{
   padding-left: 2%;
   background-color: #120f13;
   color: white;
+  padding-right: 2%;
 }
 
 .short{
@@ -229,6 +236,12 @@ body{
   margin-right: 5%;
   background-color: #3c393f;
   
+}
+
+
+
+.inic{
+  margin-top: 20%;
 }
 
 .short p{

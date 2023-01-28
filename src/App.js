@@ -1,17 +1,63 @@
-import { Edit } from "./components/Edit";
-import { Login } from "./components/Login";
-import { Profile } from "./components/Profile";
-import { Register } from "./components/Register";
 import { AppRouter } from "./router/AppRouter";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import React, { useEffect, useState} from 'react'
+import { userContext } from "./hooks/userContext";
+import io from 'socket.io-client';
+
+
 
 function App() {
- return (
-   <Provider store={store}>
-     <AppRouter/>
-   </Provider>
- )
+  let [canales, setCanales] = useState(["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"])
+  let originalC = ["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"]
+  const socket = io();
+
+  let [permitir, setPermitir]= useState(false)
+  const cambiaTema=()=>{
+    if(getComputedStyle(document.body).backgroundColor.toString() === "rgb(37, 35, 41)"){
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.color = "grey";
+      localStorage.setItem('tema', "claro");
+      if(window.location.pathname !== "/profile" && window.location.pathname !== "/edit"){
+        document.querySelector(".titulo").style.color = "black";
+      }
+      
+    }else{
+      document.body.style.backgroundColor = "rgb(37,35,41)";
+      document.body.style.color = "#e0e0e0";
+      localStorage.setItem('tema', "oscuro");
+      if(window.location.pathname !== "/profile" && window.location.pathname !== "/edit"){
+        document.querySelector(".titulo").style.color = "#ffffff";
+      }
+     
+    }
+  }
+
+  useEffect(() => {
+
+        socket.connect(); 
+
+        socket.on('connect', () =>{
+          console.log('Me conecte');
+        });
+    
+        socket.on('message', () => {
+          console.log('Recibo mensaje');
+
+        });
+
+        socket.on('disconnect', () =>{
+          console.log('Me desconecto socket');
+        });
+  }, []);
+
+  return (
+    <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema  }}>
+    <Provider store={store}>
+      <AppRouter/>
+    </Provider>
+    </userContext.Provider>
+  )
 }
 
 export default App;

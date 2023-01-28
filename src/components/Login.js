@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { startLogin, startLoginGoogle } from '../actions/auth';
+import { startLoadChannel } from '../actions/channel';
 import { fetchSinToken } from '../helpers/fetch';
 import { useForm } from "../hooks/useForm";
 import { useSearchParams } from "react-router-dom";
@@ -45,7 +46,7 @@ export const Login = () => {
       let body = salida.resp;
       if(body.token){
         dispatch( startLoginGoogle( body.user, body.uid, body.token) )
-        dispatch(startLoadChannel())
+        //dispatch(startLoadChannel())
         setPermitir(true);
         setLoading(false);
         navigate('/profile');
@@ -73,9 +74,10 @@ export const Login = () => {
   
   const handleLogin=(e)=>{
     e.preventDefault();
-    dispatch(startLoadChannel())
+    //dispatch(startLoadChannel())
     dispatch(startLogin( lEmail, lPassword )).then((resp)=>{
       if(resp && resp.payload.token){
+        dispatch( startLoadChannel())
         setPermitir(true);
         navigate('/profile');
       }
