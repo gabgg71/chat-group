@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 
 
 function App() {
-  const socket = io();
+  const [socket, setSocket] = useState(null);
 
   let [permitir, setPermitir]= useState(false)
   let [otroCanal, setOtro] = useState(false);
@@ -33,6 +33,14 @@ function App() {
   }
 
   useEffect(() => {
+      const socket = io("http://localhost:4000",{
+      cors: { origin: '*' },
+      "transports": ["websocket"],
+      "autoConnect": false,
+      });
+
+      setSocket(socket);
+      
 
         socket.connect(); 
 
@@ -48,6 +56,10 @@ function App() {
         socket.on('disconnect', () =>{
           console.log('Me desconecto socket');
         });
+        
+        return () => {
+          socket.disconnect();
+        };
   }, []);
 
   return (

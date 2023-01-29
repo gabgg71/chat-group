@@ -40,10 +40,10 @@ export const loadMsg = (channel, msg) => {
         let respuesta = await fetchSinToken(`channel/msg`, {channel_id: channel, msg}, 'POST')
         let body = await respuesta.json();
         if(body.ok){
-            dispatch({
+            return dispatch({
                 type: types.loadMsg,
                 payload: {channel, msg}
-            });
+            })
         }else{
             Swal.fire('Error', body.msg, 'error');
         }

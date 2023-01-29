@@ -5,7 +5,6 @@ let originals = []
 export const channelReducer = ( state = [], action ) => {
     switch ( action.type ) {
         case types.loadChannels:
-            console.log(`llaman reducer ${action.payload}`)
             originals = action.payload
             return [
                 ...state,
@@ -16,8 +15,7 @@ export const channelReducer = ( state = [], action ) => {
         case types.deleteChannel:
             return state.filter(channel => channel._id !== action.payload)
         case types.loadMsg:
-            console.log(`llaman reducer ${action.payload}`)
-            return state.map(channel => {
+            let salida = state.map(channel => {
                 if(channel._id === action.payload.channel){
                     return {
                         ...channel,
@@ -27,6 +25,7 @@ export const channelReducer = ( state = [], action ) => {
                     return channel
                 }
             })
+            return salida
         case types.membersToChannel:
             return state.map(channel => {
                 if(channel._id === action.payload.channel){

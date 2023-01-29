@@ -7,8 +7,9 @@ import { NewChannel } from './NewChannel';
 import { startNewMember } from '../actions/channel';
 import { useDispatch } from 'react-redux';
 
-export const Channels = ({setFocus}) => {
+export const Channels = ({focusCh, setFocus}) => {
     let [channels, setChannels] = useState(store.getState().channel);
+    let [escuchando, setEscucho] = useState([]);
     const {socket} = useContext(userContext);
     const [open, setOpen] = useState(false);
     let [user, _] = useState(store.getState().info);
@@ -32,14 +33,13 @@ export const Channels = ({setFocus}) => {
         };
     }, []);
 
+
     
 
     
     
 
-    const unirse = (idCanal, info) => {
-        socket.emit('unirse', {id:`channel${idCanal, info}`});
-    }
+    
 
     
 
@@ -51,7 +51,12 @@ export const Channels = ({setFocus}) => {
             if(body.ok){
                 dispatch(startNewMember(canal._id, {name: user.name, img: user.img}));
             }
-            console.log(`entrado canal ${JSON.stringify(respuesta)}`);
+        }
+        if(!escuchando.includes(canal._id)){
+            socket.emit('unirse', {id:`channel${canal._id}`, info:{
+                name: user.name,
+                img: user.img
+            }});
         }
     }
     

@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {store} from '../store/store.js';
 //import { NewChannel } from './NewChannel';
 import { Channels } from './Channels';
@@ -17,25 +17,38 @@ export const Chat = () => {
     const dispatch = useDispatch();
     
     let escribir = document.querySelector(".write");
+    let conversation =  useRef(null);
 
 
     useEffect(() => {
         escribir = document.querySelector(".write");
-        
+       
     }, []);
+
+    useEffect(() => {
+        if (conversation.current) {
+            conversation.current.scrollTop = conversation.current.scrollHeight;
+        }
+    }, [conversation]);
+
+   
 
     const enviarMensaje=async()=>{
         if(escribir.value.length >0){
-           /* socket.emit(
-                'send_message',
-                {channel: `channel${channel}`, msg:escribir.value, user:{name: user.name, img: user.img}},
-              );*/
             let msg = {
-            user: {name: user.name, img: user.img},
-            content: escribir.value,
-            date: new Date()
+                user: {name: user.name, img: user.img},
+                content: escribir.value,
+                date: new Date().toString()
             }
-            dispatch(loadMsg(focusCh._id, msg));
+            setFocus({...focusCh, 
+                messages : [...focusCh.messages, msg]})
+            socket.emit(
+                    'send_message',
+                    {channel: `channel${focusCh._id}`, msg}
+                );
+            dispatch(loadMsg(focusCh._id, msg)).then((salida)=>{
+                console.log(`salida ${JSON.stringify(salida)} `);
+            })
             escribir.value = "";
         }
     }
@@ -54,22 +67,21 @@ export const Chat = () => {
         highlight
         </span></button>
         <div className="chat2">
-            <Channels setFocus={setFocus}/>
+            <Channels focusCh= {focusCh} setFocus={setFocus}/>
 
         <div className="chat">
             <p className='name'>{focusCh.name}</p>
-            <div className='conversacion'>
+            <div className='conversacion' ref={conversation}>
                 {(focusCh.messages)?(focusCh.messages.map((mensaje, index)=>{
-                    console.log(`aqui un msg ${JSON.stringify(mensaje)}`)
                     return(
                         <div className='canal' key={index}>
-                            <img src={mensaje[0].user.img} className='show'></img>
+                            <img src={(mensaje[0])?(mensaje[0].user.img):(mensaje.user.img)} className='show'></img>
                             <div className='msg'>
                                 <div className='canal'>
-                                    <p className='user'>{mensaje[0].user.name}</p>
-                                    <p className='time'>{mensaje[0].date.substring(0, 10)} {mensaje[0].date.substring(11, 19)}</p>
+                                    <p className='user'>{(mensaje[0])?(mensaje[0].user.name):(mensaje.user.name)}</p>
+                                    <p className='time'>{(mensaje[0])?(`${mensaje[0].date.substring(0, 10)} ${mensaje[0].date.substring(11, 19)}`):(``)}</p>
                                 </div>
-                                <p className='complete'>{mensaje[0].content}</p>
+                                <p className='complete'>{(mensaje[0])?(mensaje[0].content):(mensaje.content)}</p>
                             </div>
                         </div>
                     )
