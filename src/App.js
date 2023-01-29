@@ -8,11 +8,10 @@ import io from 'socket.io-client';
 
 
 function App() {
-  let [canales, setCanales] = useState(["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"])
-  let originalC = ["maravilla", "diseno", "sjkdbfsdegbvd gfdjhf"]
   const socket = io();
 
   let [permitir, setPermitir]= useState(false)
+  let [otroCanal, setOtro] = useState(false);
   const cambiaTema=()=>{
     if(getComputedStyle(document.body).backgroundColor.toString() === "rgb(37, 35, 41)"){
       document.body.style.backgroundColor = "#ffffff";
@@ -52,7 +51,7 @@ function App() {
   }, []);
 
   return (
-    <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema  }}>
+    <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema, otroCanal, setOtro }}>
     <Provider store={store}>
       <AppRouter/>
     </Provider>

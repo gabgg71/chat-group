@@ -1,9 +1,8 @@
 import { types } from '../types/types';
 
-const channels = []
 let originals = []
 
-export const channelReducer = ( state = channels, action ) => {
+export const channelReducer = ( state = [], action ) => {
     switch ( action.type ) {
         case types.loadChannels:
             console.log(`llaman reducer ${action.payload}`)
@@ -13,12 +12,32 @@ export const channelReducer = ( state = channels, action ) => {
                 ...action.payload
             ]
         case types.createChannel:
-            return [
-                ...state,
-                action.payload
-            ]
+            return [action.payload, ...state]
         case types.deleteChannel:
-            return state.filter(channel => channel.id !== action.payload)
+            return state.filter(channel => channel._id !== action.payload)
+        case types.loadMsg:
+            console.log(`llaman reducer ${action.payload}`)
+            return state.map(channel => {
+                if(channel._id === action.payload.channel){
+                    return {
+                        ...channel,
+                        messages: [...channel.messages, action.payload.msg]
+                    }
+                } else {
+                    return channel
+                }
+            })
+        case types.membersToChannel:
+            return state.map(channel => {
+                if(channel._id === action.payload.channel){
+                    return {
+                        ...channel,
+                        members: [...channel.members, action.payload.user]
+                    }
+                } else {
+                    return channel
+                }
+            })
         default:
             return state;
     }

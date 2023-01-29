@@ -3,7 +3,7 @@ import { startAddChannel } from '../actions/channel';
 import {store} from '../store/store.js';
 import React, { useEffect, useState } from 'react';
 
-export const NewChannel = ({setNew}) => {
+export const NewChannel = ({setOtro}) => {
     let [user, _] = useState(store.getState().info);
     let name = undefined;
     let description = undefined;
@@ -15,13 +15,16 @@ export const NewChannel = ({setNew}) => {
     }, []);
 
     const crearCanal =()=>{
-        console.log(name.value.toUpperCase(), description.value, user._id)
-       dispatch( startAddChannel({name: name.value, description: description.value, admin: user._id}))
+        dispatch( startAddChannel({name: name.value.toUpperCase(), description: description.value, admin: user._id}))
+        name.value = "";
+        description.value = "";
     }
 
     return (
         <div className="newc">
-            <button onClick={setNew(false)} className="btn-cerrar">x</button>
+            <button onClick={()=>{
+        setOtro(false);
+    }} className="btn-cerrar">x</button>
             <p>NEW CHANNEL</p>
             <input placeholder="Channel name" className='nombrec'></input>
             <textarea placeholder="Channel Description" className='descrc'></textarea>

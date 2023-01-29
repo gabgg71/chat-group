@@ -3,25 +3,33 @@ import { userContext } from '../hooks/userContext';
 import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 import { fetchSinToken } from '../helpers/fetch';
+import { NewChannel } from './NewChannel';
+import { startNewMember } from '../actions/channel';
+import { useDispatch } from 'react-redux';
 
-export const Channels = ({setNew, setFocus}) => {
+export const Channels = ({setFocus}) => {
     let [channels, setChannels] = useState(store.getState().channel);
     const {socket} = useContext(userContext);
     const [open, setOpen] = useState(false);
     let [user, _] = useState(store.getState().info);
-    
+    const [otroCanal, setOtro] = useState(false);
+    const dispatch = useDispatch();
     let originalC = store.getState().channel;
     const navigate = useNavigate();
 
     useEffect(() => {
+        setFocus(channels.filter(channel => channel.name === "WELCOME"));
         
         setChannels(store.getState().channel);
         
-        store.subscribe(() => {
+        const uns = store.subscribe(() => {
             setChannels({
               channels: store.getState().channel
             });
           });
+        return () => {
+        uns();
+        };
     }, []);
 
     
@@ -37,34 +45,56 @@ export const Channels = ({setNew, setFocus}) => {
 
     const entrarCanal =async(canal)=>{
         setFocus(canal);
-        /*if(!user.channels.includes(canal.id)){
-            let respuesta = await fetchSinToken(`/channel/add`, {channel: canal.id, user: user.id}, 'PUT')
-            console.log(`entrado canal ${respuesta}`);
-        }*/
+        if(!user.channels.includes(canal._id)){
+            let respuesta = await fetchSinToken(`channel/add`, {channel: canal._id, user: user._id}, 'PUT')
+            let body = await respuesta.json();
+            if(body.ok){
+                dispatch(startNewMember(canal._id, {name: user.name, img: user.img}));
+            }
+            console.log(`entrado canal ${JSON.stringify(respuesta)}`);
+        }
     }
-
+    
     const busca=(e)=>{
         setChannels(originalC.filter((canal)=>{
             return canal.name.toUpperCase().includes(e.target.value.toUpperCase())
         }))
     }
 
+    
+
     return (
         <>
+        {otroCanal && <NewChannel setOtro={setOtro}/>}
         <div className="channels">
         <div className="cha">
             <p>Channels</p>
             <button className="create mas" onClick={()=>{
-                console.log("click en crear");
-                setNew(true)}}>
+                setOtro(true);
+                }}>
             <span class="material-icons">
             add
             </span>
             </button>
         </div>
         <input className="buscar" placeholder="Search" onChange={busca}></input>
+        <div className='cha visualizar'>
+            <button onClick={()=>{
+                setChannels(originalC);
+            }}>Todos los canales</button>
+            <button onClick={()=>{
+                setChannels(
+                    user.channels.map((id)=>{
+                        return originalC.find((canal)=>{
+                            return canal._id === id
+                        })
+                    })
+                )
+            }}>Canales a los que pertenezco</button>
+        </div>
         <div className="nombre-c">
-            {channels.map((canal, index)=>{
+            {(channels.channels)?(channels.channels.map((canal, index)=>{
+                
                 return(
                     <div className="canal" key={index} onClick={()=>{entrarCanal(canal)}}>
                         <div className="short">
@@ -73,7 +103,17 @@ export const Channels = ({setNew, setFocus}) => {
                         <p>{canal.name}</p>
                     </div>
                 )
-            })}
+            })):(channels.map((canal, index)=>{
+                
+                return(
+                    <div className="canal" key={index} onClick={()=>{entrarCanal(canal)}}>
+                        <div className="short">
+                            <p className='inic'>{canal.name.substr(0,2).toUpperCase()}</p>
+                        </div>
+                        <p>{canal.name}</p>
+                    </div>
+                )
+            }))}
         </div>
     </div>
     {open && (

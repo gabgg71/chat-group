@@ -5,7 +5,8 @@ const userState = {
     name:"",
     bio:"",
     phone: "",
-    email: ""
+    email: "",
+    channels: []
 }
 
 export const infoReducer = ( state = userState, action ) => {
@@ -14,6 +15,11 @@ export const infoReducer = ( state = userState, action ) => {
             return {
                 ...state,
                 ...action.payload
+            }
+        case types.newChannel:
+            return {
+                ...state,
+                channels: [...state.channels, action.payload],
             }
         default:
             return state;

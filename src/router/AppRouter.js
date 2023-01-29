@@ -10,6 +10,7 @@ import { Chat } from "../components/Chat";
 
 export const AppRouter = () => {
   const { permitir } = useContext(userContext);
+  
  
   
   return (

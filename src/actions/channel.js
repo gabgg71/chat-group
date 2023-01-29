@@ -21,6 +21,35 @@ export const startLoadChannel = (data) => {
     }
 }
 
+export const startNewMember = (channel, user) => {
+    return async( dispatch ) => {
+            //agregar id del canal a usuario
+            dispatch({
+                type: types.newChannel,
+                payload: channel
+            })
+            dispatch({
+                type: types.membersToChannel,
+                payload: {channel, user}
+            })
+    }
+}
+
+export const loadMsg = (channel, msg) => {
+    return async( dispatch ) => {
+        let respuesta = await fetchSinToken(`channel/msg`, {channel_id: channel, msg}, 'POST')
+        let body = await respuesta.json();
+        if(body.ok){
+            dispatch({
+                type: types.loadMsg,
+                payload: {channel, msg}
+            });
+        }else{
+            Swal.fire('Error', body.msg, 'error');
+        }
+    }
+}
+
 export const startAddChannel = (data) => {
     return async( dispatch ) => {
         const resp = await fetchSinToken('channel/create', data, 'POST' );
@@ -29,10 +58,10 @@ export const startAddChannel = (data) => {
         if( body.ok ) {
             return dispatch({
                 type: types.createChannel,
-                payload: data
+                payload: JSON.parse(JSON.stringify(body.canal))
             })
         } else {
-            Swal.fire('Error', "It was not possible to create this channel", 'error');
+            Swal.fire('Error', body.msg, 'error');
         }
     }
 }

@@ -26,6 +26,11 @@ export const Login = () => {
   });
 
   useEffect(async() => {
+    const un = store.subscribe(() => {
+      setUser({
+        user: store.getState().user
+      });
+    });
     if(localStorage.getItem('tema') === "oscuro"){
       document.body.style.backgroundColor = "rgb(37,35,41)";
       document.body.style.color = "#e0e0e0";
@@ -55,15 +60,14 @@ export const Login = () => {
         Swal.fire('Error', body.msg || body, 'error');
     }
     }
+    return () => {
+      un();
+      };
   }, []);
 
     
 
-  store.subscribe(() => {
-      setUser({
-        user: store.getState().user
-      });
-    });
+  
  
   
 
@@ -74,7 +78,6 @@ export const Login = () => {
   
   const handleLogin=(e)=>{
     e.preventDefault();
-    //dispatch(startLoadChannel())
     dispatch(startLogin( lEmail, lPassword )).then((resp)=>{
       if(resp && resp.payload.token){
         dispatch( startLoadChannel())

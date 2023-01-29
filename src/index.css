@@ -212,6 +212,20 @@ body{
   flex-direction: row;
   width: 95%;
 }
+.visualizar{
+  margin-bottom: 5%;
+}
+
+.visualizar button{
+  border: none;
+  background-color: transparent;
+  color: rgb(126, 7, 7);
+
+}
+
+.visualizar button:hover{
+  color: rgb(229, 38, 38);
+}
 
 .header{
   display: flex;
@@ -551,7 +565,7 @@ b{
   height: 7%;
   bottom: 0%;
   left: 0%;
-  width: 19.6%;
+  width: 21%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
