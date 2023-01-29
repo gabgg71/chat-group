@@ -3,52 +3,45 @@ import {store} from '../store/store.js';
 //import { NewChannel } from './NewChannel';
 import { Channels } from './Channels';
 import { userContext } from '../hooks/userContext';
+import { currentContext } from '../hooks/currentContext';
 import { useDispatch } from 'react-redux';
 
 import { loadMsg } from '../actions/channel';
+import { Members } from './Members.js';
 
 export const Chat = () => {
-    let [focusCh, setFocus] = useState({
-        "name": "WELCOME",
-        "messages": []});
-    let [user, _] = useState(store.getState().info);
-    const {socket} = useContext(userContext);
-    const {cambiaTema } = useContext(userContext);
-    const dispatch = useDispatch();
     
+    let [user, _] = useState(store.getState().info);
+    const {socket,cambiaTema} = useContext(userContext);
+    let [member, setMember] = useState(false);
+    const {focusCh, setFocus} = useContext(currentContext);
+    const dispatch = useDispatch();
     let escribir = document.querySelector(".write");
     let conversation =  useRef(null);
 
 
     useEffect(() => {
-        escribir = document.querySelector(".write");
+             escribir = document.querySelector(".write");
        
     }, []);
 
-    useEffect(() => {
-        if (conversation.current) {
-            conversation.current.scrollTop = conversation.current.scrollHeight;
-        }
-    }, [conversation]);
-
+   
    
 
     const enviarMensaje=async()=>{
-        if(escribir.value.length >0){
+        if(escribir.value.length >0 && focusCh.name){
             let msg = {
                 user: {name: user.name, img: user.img},
                 content: escribir.value,
-                date: new Date().toString()
+                date: new Date().toISOString()
             }
             setFocus({...focusCh, 
                 messages : [...focusCh.messages, msg]})
             socket.emit(
                     'send_message',
-                    {channel: `channel${focusCh._id}`, msg}
+                    {channel: focusCh._id, msg}
                 );
-            dispatch(loadMsg(focusCh._id, msg)).then((salida)=>{
-                console.log(`salida ${JSON.stringify(salida)} `);
-            })
+            dispatch(loadMsg(focusCh._id, msg))
             escribir.value = "";
         }
     }
@@ -67,8 +60,7 @@ export const Chat = () => {
         highlight
         </span></button>
         <div className="chat2">
-            <Channels focusCh= {focusCh} setFocus={setFocus}/>
-
+            {member  &&  <Members channel={member} setMember={setMember}/>|| <Channels setMember={setMember}/>}
         <div className="chat">
             <p className='name'>{focusCh.name}</p>
             <div className='conversacion' ref={conversation}>

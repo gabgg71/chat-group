@@ -12,5 +12,6 @@ export const types = {
     loadMsg:'[channel] New msg',
     createChannel: '[channel] Create',
     deleteChannel: '[channel] Delete',
-    membersToChannel: '[channel] New Member'
+    membersToChannel: '[channel] New Member',
+    changeCurrent: '[current] Change',
 }

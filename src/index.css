@@ -60,7 +60,7 @@ body{
 .newc{
   position: absolute !important;
   top: 25%;
-  left: 25% ;
+  left: 30% ;
   border-radius: 10px;
   background-color: #120f13;
   display: flex;
@@ -120,6 +120,15 @@ body{
   margin: 0.8%;
 }
 
+.volver{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  margin: 0% !important;
+  padding: 0% !important;
+}
+
 
 .enviar{
   height: 8%;
@@ -138,6 +147,11 @@ body{
   font-weight: bold;
 }
 
+
+.resalt{
+  font-weight: bold;
+
+}
 
 .main-box{
   padding: 3%;
@@ -158,6 +172,10 @@ body{
   height: 74%;
 }
 
+
+.newc input, .newc textarea{
+  color: white;
+}
 @media (max-width: 600px) {
   .main-box {
     width: 80vw;
@@ -220,12 +238,12 @@ body{
 .visualizar button{
   border: none;
   background-color: transparent;
-  color: rgb(126, 7, 7);
+  color:#2D9CDB;
 
 }
 
 .visualizar button:hover{
-  color: rgb(229, 38, 38);
+  color: #173cbe;
 }
 
 .header{

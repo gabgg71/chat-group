@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { userContext } from '../hooks/userContext';
+import { currentContext } from '../hooks/currentContext';
 import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 import { fetchSinToken } from '../helpers/fetch';
@@ -7,10 +8,12 @@ import { NewChannel } from './NewChannel';
 import { startNewMember } from '../actions/channel';
 import { useDispatch } from 'react-redux';
 
-export const Channels = ({focusCh, setFocus}) => {
+export const Channels = ({setMember}) => {
     let [channels, setChannels] = useState(store.getState().channel);
     let [escuchando, setEscucho] = useState([]);
+    
     const {socket} = useContext(userContext);
+    const {focusCh, setFocus} = useContext(currentContext);
     const [open, setOpen] = useState(false);
     let [user, _] = useState(store.getState().info);
     const [otroCanal, setOtro] = useState(false);
@@ -45,6 +48,8 @@ export const Channels = ({focusCh, setFocus}) => {
 
     const entrarCanal =async(canal)=>{
         setFocus(canal);
+        setMember(canal);
+        
         if(!user.channels.includes(canal._id)){
             let respuesta = await fetchSinToken(`channel/add`, {channel: canal._id, user: user._id}, 'PUT')
             let body = await respuesta.json();
@@ -53,7 +58,7 @@ export const Channels = ({focusCh, setFocus}) => {
             }
         }
         if(!escuchando.includes(canal._id)){
-            socket.emit('unirse', {id:`channel${canal._id}`, info:{
+            socket.emit('unirse', {id:canal._id, info:{
                 name: user.name,
                 img: user.img
             }});

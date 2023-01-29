@@ -24,7 +24,7 @@ export const AppRouter = () => {
         </Route>
           <Route exact path="/profile" element={(permitir ? <Profile /> : <Login />)} />
           <Route exact path="/edit" element={(permitir ? <Edit /> : <Login />)} />
-          <Route exact path="/chat" element={(permitir ? <Chat /> : <Login />)} />
+          <Route exact path="/chat" element={(permitir ? <Chat/> : <Login />)} />
           <Route path="*" element={<Login />} />
         </Routes>
       </div>
