@@ -10,10 +10,9 @@ import { useDispatch } from 'react-redux';
 
 export const Channels = ({setMember}) => {
     let [channels, setChannels] = useState(store.getState().channel);
-    let [escuchando, setEscucho] = useState([]);
     
     const {socket} = useContext(userContext);
-    const {focusCh, setFocus} = useContext(currentContext);
+    const {focusCh, setFocus, escuchando, setEscucho } = useContext(currentContext);
     const [open, setOpen] = useState(false);
     let [user, _] = useState(store.getState().info);
     const [otroCanal, setOtro] = useState(false);
@@ -54,7 +53,14 @@ export const Channels = ({setMember}) => {
             let respuesta = await fetchSinToken(`channel/add`, {channel: canal._id, user: user._id}, 'PUT')
             let body = await respuesta.json();
             if(body.ok){
-                dispatch(startNewMember(canal._id, {name: user.name, img: user.img}));
+                let agregar = true;
+                canal.members.map((member)=>{
+                    if(member._id === user._id){
+                        agregar = false;
+                    }})
+                if(agregar){
+                    dispatch(startNewMember(canal._id, {_id: user._id, name: user.name, img: user.img}));
+                }
             }
         }
         if(!escuchando.includes(canal._id)){
@@ -62,6 +68,7 @@ export const Channels = ({setMember}) => {
                 name: user.name,
                 img: user.img
             }});
+            setEscucho([...escuchando, canal._id])
         }
     }
     
@@ -93,13 +100,14 @@ export const Channels = ({setMember}) => {
                 setChannels(originalC);
             }}>Todos los canales</button>
             <button onClick={()=>{
-                setChannels(
-                    user.channels.map((id)=>{
+             
+                    let resultado = user.channels.map((id)=>{
                         return originalC.find((canal)=>{
                             return canal._id === id
                         })
-                    })
-                )
+                    }).filter((el)=> el !==undefined) || []
+                    setChannels(resultado)
+              //  )
             }}>Canales a los que pertenezco</button>
         </div>
         <div className="nombre-c">
@@ -113,7 +121,7 @@ export const Channels = ({setMember}) => {
                         <p>{canal.name}</p>
                     </div>
                 )
-            })):(channels.map((canal, index)=>{
+            })):((channels)?(channels.map((canal, index)=>{
                 
                 return(
                     <div className="canal" key={index} onClick={()=>{entrarCanal(canal)}}>
@@ -123,7 +131,7 @@ export const Channels = ({setMember}) => {
                         <p>{canal.name}</p>
                     </div>
                 )
-            }))}
+            })):(null))}
         </div>
     </div>
     {open && (

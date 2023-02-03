@@ -5,6 +5,8 @@ import { userContext } from "./hooks/userContext";
 import { currentContext } from "./hooks/currentContext";
 import io from 'socket.io-client';
 import { loadMsg } from './actions/channel';
+import {store} from './store/store.js';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -12,7 +14,9 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [focusCh, setFocus] = useState({});
   let [permitir, setPermitir]= useState(false)
-  //let [channels, setChannels] = useState(store.getState().channel);
+  let [channels, setChannels] = useState(store.getState().channel);
+  let [escuchando, setEscucho] = useState([]);
+  const dispatch = useDispatch();
 
   const cambiaTema=()=>{
     if(getComputedStyle(document.body).backgroundColor.toString() === "rgb(37, 35, 41)"){
@@ -34,8 +38,12 @@ function App() {
     }
   }
 
-  useEffect(() => {
-      console.log("se renderiza app")
+  useEffect(async() => {
+    const un = store.subscribe(() => {
+      setChannels({
+        channels: store.getState().channel
+      });
+    });
       const socket = io("http://localhost:4000",{
       cors: { origin: '*' },
       "transports": ["websocket"],
@@ -52,39 +60,39 @@ function App() {
         });
 
         socket.on('message', (data) => {
-          console.log('Recibo msg cuando estaba en canal '+JSON.stringify(focusCh.name));
           let msg = JSON.parse(JSON.stringify(data));
-          console.log('Recibo mensaje '+JSON.stringify(msg));
-          /*let channel_id = msg.channel_id;
-          console.log('estos son canales '+JSON.stringify(channels));
-          let canal = channels.filter(channel => {
+          let estoy = document.querySelector(".name");
+          let channel_id = msg.channel_id;
+          let canales = store.getState().channel;
+          let canal = canales.filter(channel => {
               if(channel._id === channel_id){
-                  console.log('Canal encontrado'+JSON.stringify(channel));
                   return channel;
-              }});
+              }})[0]
           if(canal){
               let quedaria = {...canal, 
               messages : [...canal.messages, msg.msg]}
-              console.log('Quedo '+JSON.stringify(quedaria)+' mesg '+JSON.stringify(quedaria.messages));
-              setFocus(quedaria)
-          }*/
-      /* dispatch(loadMsg(focusCh._id, msg))*/
+              if(estoy.innerHTML === canal.name){
+                setFocus(quedaria)
+              }
+            dispatch(loadMsg(canal._id, msg.msg));
+          }
 
       });
     
 
         socket.on('disconnect', () =>{
-          console.log('Me desconecto socket');
+          console.log('Me desconecto');
         });
         
         return () => {
+          un();
           socket.disconnect();
         };
   }, []);
 
   return (
-    <currentContext.Provider value={{focusCh, setFocus}}>
-    <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema }}>
+    <currentContext.Provider value={{focusCh, setFocus, escuchando, setEscucho }}>
+    <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema}}>
       <AppRouter/>
     </userContext.Provider>
     </currentContext.Provider>

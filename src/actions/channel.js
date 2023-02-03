@@ -10,7 +10,6 @@ export const startLoadChannel = (data) => {
             let canales = body.channels.map(channel => {
                 return JSON.parse(JSON.stringify(channel))
             });
-            console.log(`CANALES ${canales[0]}`)
             return dispatch( {
                 type: types.loadChannels,
                 payload: canales
@@ -54,7 +53,6 @@ export const startAddChannel = (data) => {
     return async( dispatch ) => {
         const resp = await fetchSinToken('channel/create', data, 'POST' );
         const body = await resp.json();
-        console.log(JSON.stringify(body))
         if( body.ok ) {
             return dispatch({
                 type: types.createChannel,
@@ -70,6 +68,5 @@ export const DeleteChannel = (data) => {
     return async( dispatch ) => {
         const resp = await fetchSinToken('channel/delete', data, 'DELETE' );
         const body = await resp.json();
-        console.log(JSON.stringify(body))
     }
 }
