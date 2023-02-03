@@ -16,8 +16,7 @@ export const NewChannel = ({setOtro}) => {
 
     const crearCanal =()=>{
         dispatch( startAddChannel({name: name.value.toUpperCase(), description: description.value, admin: user._id}))
-        name.value = "";
-        description.value = "";
+        setOtro(false);
     }
 
     return (

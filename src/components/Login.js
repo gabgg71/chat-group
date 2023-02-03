@@ -9,16 +9,19 @@ import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
 import { userContext } from '../hooks/userContext';
 import Swal from 'sweetalert2';
+import { currentContext } from '../hooks/currentContext';
 import { Spin } from 'antd';
 
 
 
 export const Login = () => {
-  let [user, setUser] = useState(store.getState().info.name);
+  let [user, setUser] = useState(store.getState().info);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setPermitir, cambiaTema } = useContext(userContext);
+  const { socket, setPermitir, cambiaTema } = useContext(userContext);
+  const { escuchando, setEscucho } = useContext(currentContext);
   const dispatch = useDispatch();
+  let [channels, setChannels] = useState(store.getState().channel);
   let [searchParams, setSearchParams] = useSearchParams();
   const [loginData, handleLoginData] = useForm({
     email: "",
@@ -51,10 +54,12 @@ export const Login = () => {
       let body = salida.resp;
       if(body.token){
         dispatch( startLoginGoogle( body.user, body.uid, body.token) )
-        //dispatch(startLoadChannel())
-        setPermitir(true);
-        setLoading(false);
-        navigate('/profile');
+        dispatch(startLoadChannel()).then(()=>{
+          comunicarse();
+          setPermitir(true);
+          setLoading(false);
+          navigate('/profile');
+        })
       }else {
         setLoading(false);
         Swal.fire('Error', body.msg || body, 'error');
@@ -65,6 +70,22 @@ export const Login = () => {
       };
   }, []);
 
+
+  const comunicarse=()=>{
+    let us = store.getState().info;
+    let resultado = us.channels.map((id)=>{
+      return store.getState().channel.find((canal)=>{
+          return canal._id === id
+      })
+  }).filter((el)=> el !==undefined)
+    resultado.map((canal)=>{
+      socket.emit('unirse', {id:canal._id, info:{
+        name: us.name,
+        img: us.img
+    }});
+      setEscucho([...escuchando, canal._id])
+    })
+  }
     
 
   
@@ -80,9 +101,12 @@ export const Login = () => {
     e.preventDefault();
     dispatch(startLogin( lEmail, lPassword )).then((resp)=>{
       if(resp && resp.payload.token){
-        dispatch( startLoadChannel())
-        setPermitir(true);
-        navigate('/profile');
+        dispatch( startLoadChannel()).then(()=>{
+          //setChannels(store.getState().channel)
+          comunicarse();
+          setPermitir(true);
+          navigate('/profile');
+        })
       }
     });
     

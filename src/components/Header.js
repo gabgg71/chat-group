@@ -29,6 +29,9 @@ export const Header = () => {
           <button className="inline">
           <i className="material-icons" onClick={display}>arrow_drop_down</i>
           </button>
+          <button className='theme' onClick={cambiaTema}><span class="material-icons">
+highlight
+</span></button>
         </div>
         {open && (
           <div className="options">
@@ -52,10 +55,9 @@ export const Header = () => {
             </button>
           </div>
         )}
-        <button className='theme' onClick={cambiaTema}><span class="material-icons">
-highlight
-</span></button>
       </div>
+      
+       
     </div>
   );
 };

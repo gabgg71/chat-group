@@ -14,6 +14,7 @@ export const Channels = ({setMember}) => {
     const {socket} = useContext(userContext);
     const {focusCh, setFocus, escuchando, setEscucho } = useContext(currentContext);
     const [open, setOpen] = useState(false);
+    
     let [user, _] = useState(store.getState().info);
     const [otroCanal, setOtro] = useState(false);
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ export const Channels = ({setMember}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setFocus(channels.filter(channel => channel.name === "WELCOME"));
+        setFocus(channels.filter(channel => channel.name === "WELCOME")[0]);
         
         setChannels(store.getState().channel);
         
@@ -47,7 +48,7 @@ export const Channels = ({setMember}) => {
 
     const entrarCanal =async(canal)=>{
         setFocus(canal);
-        setMember(canal);
+        setMember(true);
         
         if(!user.channels.includes(canal._id)){
             let respuesta = await fetchSinToken(`channel/add`, {channel: canal._id, user: user._id}, 'PUT')
@@ -59,7 +60,17 @@ export const Channels = ({setMember}) => {
                         agregar = false;
                     }})
                 if(agregar){
-                    dispatch(startNewMember(canal._id, {_id: user._id, name: user.name, img: user.img}));
+                    let person = {
+                        _id: user._id,
+                        name: user.name,
+                        img: user.img
+                    }
+                    setFocus({
+                        ...canal,
+                        members: [...canal.members, person]
+                      })
+                    socket.emit('new_member', {id:canal._id, user:person});
+                    dispatch(startNewMember(canal._id, person));
                 }
             }
         }
@@ -107,7 +118,6 @@ export const Channels = ({setMember}) => {
                         })
                     }).filter((el)=> el !==undefined) || []
                     setChannels(resultado)
-              //  )
             }}>Canales a los que pertenezco</button>
         </div>
         <div className="nombre-c">

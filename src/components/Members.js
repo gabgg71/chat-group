@@ -1,11 +1,14 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {store} from '../store/store.js';
 import { useNavigate } from 'react-router-dom';
+import { currentContext } from '../hooks/currentContext';
 
-export const Members = ({channel, setMember}) => {
+export const Members = ({setMember}) => {
     let [user, _] = useState(store.getState().info);
+    const {focusCh} = useContext(currentContext);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+
     return (
         <>
         <div className="channels">
@@ -20,10 +23,10 @@ arrow_back_ios
             <p>All Channels</p>
         </div>
         <div className="nombre-c">
-            <p className='resalt'>{channel.name}</p>
-            <p>{channel.description}</p>
+            <p className='resalt'>{focusCh.name}</p>
+            <p>{focusCh.description}</p>
             <p className='resalt'>MEMBERS</p>
-            {channel.members.map((member, index) => {
+            {focusCh.members.map((member, index) => {
                 return (
                     <div className="canal" key={index}>
                         <div className="short">

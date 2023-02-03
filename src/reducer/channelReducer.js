@@ -15,7 +15,6 @@ export const channelReducer = (state = [], action) => {
         case types.deleteChannel:
             return state.filter(channel => channel._id !== action.payload)
         case types.loadMsg:
-            console.log("SE LLAMO AL STORE ---------------------- payload " + JSON.stringify(action.payload))
             let salida = state.map(channel => {
                 if (channel._id === action.payload.channel) {
                     return {

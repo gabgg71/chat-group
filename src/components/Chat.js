@@ -14,6 +14,7 @@ export const Chat = () => {
     let [user, _] = useState(store.getState().info);
     const {socket,cambiaTema} = useContext(userContext);
     let [member, setMember] = useState(false);
+    const [abrirCh, setAbrirCh] = useState(window.screen.width > 600);
     const {focusCh, setFocus} = useContext(currentContext);
     const dispatch = useDispatch();
     let escribir = document.querySelector(".write");
@@ -22,7 +23,9 @@ export const Chat = () => {
 
     useEffect(() => {
              escribir = document.querySelector(".write");
-       
+             if(window.screen.width < 600){
+                setAbrirCh(false);
+            }         
     }, []);
 
    
@@ -48,6 +51,12 @@ export const Chat = () => {
 
     
 
+
+
+    
+
+    
+
  
 
     
@@ -56,12 +65,24 @@ export const Chat = () => {
 
     return (
         <>
-        <button className='theme' onClick={cambiaTema}><span class="material-icons">
+        <button className='theme2' onClick={cambiaTema}><span class="material-icons">
         highlight
         </span></button>
+        <button className='hamb' onClick={()=>{
+            setAbrirCh(true);
+        }}><span class="material-icons">
+        menu
+        </span></button>
+        {abrirCh && 
+        <button className='exit' onClick={()=>{setAbrirCh(false)}}><span class="material-icons">
+        close
+        </span></button>}
         <div className="chat2">
-            {member  &&  <Members channel={member} setMember={setMember}/>|| <Channels setMember={setMember}/>}
+            {abrirCh && member && <Members channel={member} setMember={setMember}/>}
+            {abrirCh && !member && <Channels setMember={setMember}/>}
+            
         <div className="chat">
+        
             <p className='name'>{focusCh.name}</p>
             <div className='conversacion' ref={conversation}>
                 {(focusCh.messages)?(focusCh.messages.map((mensaje, index)=>{
@@ -71,7 +92,7 @@ export const Chat = () => {
                             <div className='msg'>
                                 <div className='canal'>
                                     <p className='user'>{(mensaje[0])?(mensaje[0].user.name):(mensaje.user.name)}</p>
-                                    <p className='time'>{(mensaje[0])?(`${mensaje[0].date.substring(0, 10)} ${mensaje[0].date.substring(11, 19)}`):(``)}</p>
+                                    <p className='time'>{(mensaje[0])?(`${mensaje[0].date.substring(0, 10)} ${mensaje[0].date.substring(11, 19)}`):(`${mensaje.date.substring(0, 10)} ${mensaje.date.substring(11, 19)}`)}</p>
                                 </div>
                                 <p className='complete'>{(mensaje[0])?(mensaje[0].content):(mensaje.content)}</p>
                             </div>
@@ -82,7 +103,11 @@ export const Chat = () => {
             </div>
             <div className='enviar'>
             <div className='position'>
-            <input className='write' placeholder='Type a message here'></input>
+            <input className='write' placeholder='Type a message here' onKeyUp={(e)=>{
+        if(e.keyCode === 13){
+            enviarMensaje();
+        }
+    }}></input>
             <button className='btn-enviar' onClick={
                 enviarMensaje}>
             <span class="material-icons material-symbols-outlined">

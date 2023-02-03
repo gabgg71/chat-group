@@ -176,7 +176,7 @@ body{
 .newc input, .newc textarea{
   color: white;
 }
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   .main-box {
     width: 80vw;
     height: 44%;
@@ -186,11 +186,62 @@ body{
     width: 80vw !important;
   }
 
+  .options{
+    margin-right: 0%;
+    z-index: 10000;
+  }
 
+
+  
+
+  .conversacion{
+    height: 80%;
+  }
+  .write{
+    height: 7vh;
+  }
+
+  .hamb{
+    display: block !important;
+  }
+
+  .channels{
+    width: 80% !important;
+    position: absolute !important;
+  }
+
+  .exit{
+    display: block !important;
+  }
+
+  .down{
+    width: 84% !important;
+  }
+
+  .options2{
+    left: 60% !important;
+  }
 }
+
+.exit{
+  position: absolute;
+  right: 10%;
+  z-index: 20000;
+  top: 2%;
+  padding: 0%;
+}
+
 
 .red{
   color: rgb(229, 38, 38) !important;
+}
+
+.hamb{
+  position: absolute;
+  border: none;
+  top: 2%;
+  left: 1%;
+  background-color: transparent;
 }
 
 
@@ -206,6 +257,10 @@ body{
 
 .join{
   margin-bottom: 1vh;
+}
+
+.hamb{
+  display: none;
 }
 
 .padre{
@@ -255,11 +310,15 @@ body{
 }
 
 .channels{
-  width: 18%;
+  width: 20%;
+  left: 0%;
+  position: relative;
   padding-left: 2%;
   background-color: #120f13;
   color: white;
   padding-right: 2%;
+  height: 100%;
+  z-index: 1000;
 }
 
 .short{
@@ -290,6 +349,10 @@ body{
   color: white;
 }
 
+.exit{
+  display: none;
+}
+
 .header span{
   margin-top:5%;
   margin-right: 3%;
@@ -304,6 +367,7 @@ body{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  margin-right: 15vw !important;
   width: 100%;
 }
 
@@ -330,7 +394,18 @@ body{
   width: 20vh;
   display: flex;
   flex-direction: column;
-  margin-top: 4%;
+  margin-top: 0%;
+  right: 10%;
+  position: absolute;
+  background-color: white;
+}
+
+.theme2{
+  position: absolute;
+  right: 1%;
+  border: none;
+  color: #2D9CDB;
+  background-color: transparent;
 }
 
 .success{
@@ -379,9 +454,8 @@ body{
 }
 
 .theme{
-  position: absolute;
-  right: 3%;
-  top: 4%;
+  margin-bottom: 7%;
+  margin-right: 100%;
   color: #2D9CDB;
   background-color: transparent;
   border: none;
@@ -456,6 +530,12 @@ form{
   flex-direction: row;
   padding: 2% 5%;
   justify-content: start;
+  overflow-x: hidden;
+}
+
+.tema{
+  background-color: #173cbe;
+  width: 5%;
 }
 
 .general:nth-child(2){
@@ -568,12 +648,13 @@ b{
 
 .options2{
   position: absolute;
-  bottom: 4%;
+  bottom: 5%;
   left: 16%;
   background-color: aliceblue;
-  z-index: 100;
+  z-index: 10000;
   padding: 0.3% 1%;
   border-radius: 10px;
+
   
 }
 
@@ -584,11 +665,12 @@ b{
   height: 7%;
   bottom: 0%;
   left: 0%;
-  width: 21%;
+  width: 22.7%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   background-color: #070608;
+  z-index: 3000;
 }
 
 .down button{
