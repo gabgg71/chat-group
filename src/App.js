@@ -50,7 +50,7 @@ function App() {
         channels: store.getState().channel
       });
     });
-    const socket = io("http://localhost:4000", {
+    const socket = io(process.env.REACT_SERVER, {
       cors: { origin: '*' },
       "transports": ["websocket"],
       "autoConnect": false,
