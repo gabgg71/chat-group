@@ -15,7 +15,6 @@ export const AppRouter = () => {
   
   return (
     <Router>
-      <div>
         <Routes>
           <Route exact path="/" element={(permitir ? <Profile/> : <Login />)} />
           <Route exact path="/login" element={<Login />} />
@@ -27,7 +26,6 @@ export const AppRouter = () => {
           <Route exact path="/chat" element={(permitir ? <Chat/> : <Login />)} />
           <Route path="*" element={<Login />} />
         </Routes>
-      </div>
     </Router>
   );
 

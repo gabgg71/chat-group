@@ -177,7 +177,7 @@ highlight
           ></img>
         </div>
         <p className="grey">
-          Dont you have an account yet? <a className='underl' onClick={()=>{navigate("/register")}}>Register</a>
+          Dont you have an account yet? <button className='underl' onClick={()=>{navigate("/register")}}>Register</button>
         </p>
       </div>
       

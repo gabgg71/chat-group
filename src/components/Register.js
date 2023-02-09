@@ -119,7 +119,7 @@ export const Register = () => {
           ></img>
         </div>
         <p className="grey">
-          Already a member? <a className='underl' onClick={()=>{navigate("/")}}>Login</a>
+          Already a member? <button className='underl' onClick={()=>{navigate("/")}}>Login</button>
         </p>
       </div>
       <div className="credits">
