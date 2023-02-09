@@ -1,11 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { startRegister } from '../actions/auth';
+import { startLoadChannel } from '../actions/channel';
 import { useForm } from "../hooks/useForm";
 import { userContext } from '../hooks/userContext';
+import { currentContext } from '../hooks/currentContext';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from "react-router-dom";
 import { fetchSinToken } from '../helpers/fetch';
+import {store} from '../store/store.js';
 import { Spin } from 'antd';
 
 
@@ -16,7 +19,8 @@ export const Register = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const { setPermitir, cambiaTema } = useContext(userContext);
+  const { socket, setPermitir, cambiaTema } = useContext(userContext);
+  const { escuchando, setEscucho} = useContext(currentContext);
   const dispatch= useDispatch();
   const navigate = useNavigate();
 
@@ -45,15 +49,33 @@ export const Register = () => {
     }
   }, []);
 
-
+  const comunicarse=()=>{
+    let us = store.getState().info;
+    let resultado = us.channels.map((id)=>{
+      return store.getState().channel.find((canal)=>{
+          return canal._id === id
+      })
+  }).filter((el)=> el !==undefined)
+    resultado.map((canal)=>{
+      socket.emit('unirse', {id:canal._id, info:{
+        name: us.name,
+        img: us.img
+    }});
+      setEscucho([...escuchando, canal._id])
+    })
+  }
+    
 
 
   const handleRegister=(e)=>{
     e.preventDefault();
     dispatch(startRegister( rEmail, rPassword ) ).then((resp)=>{
       if(resp && resp.payload.token){
-        setPermitir(true);
-        navigate('/profile');
+        dispatch(startLoadChannel()).then(()=>{
+          comunicarse();
+          setPermitir(true);
+          navigate('/profile');
+        })
       }
     });
   }

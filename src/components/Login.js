@@ -19,9 +19,8 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { socket, setPermitir, cambiaTema } = useContext(userContext);
-  const { escuchando, setEscucho, conectarse } = useContext(currentContext);
+  const { escuchando, setEscucho } = useContext(currentContext);
   const dispatch = useDispatch();
-  let [channels, setChannels] = useState(store.getState().channel);
   let [searchParams, setSearchParams] = useSearchParams();
   const [loginData, handleLoginData] = useForm({
     email: "",

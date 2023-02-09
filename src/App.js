@@ -81,6 +81,7 @@ function App() {
     });
 
     socket.on('new_member', (datos) => {
+      let estoy = document.querySelector(".name") || { innerHTML: "" };
       let data = JSON.parse(JSON.stringify(datos));
       let channel_id = data.channel_id;
       let canales = store.getState().channel;
@@ -94,7 +95,9 @@ function App() {
           ...canal,
           members: [...canal.members, data.user]
         }
-        setFocus(quedaria)
+        if (estoy.innerHTML === canal.name) {
+          setFocus(quedaria)
+        }
         dispatch(startNewMember(data.channel_id, data.user));
       }
     });
