@@ -1,13 +1,14 @@
 {
   "name": "authentication-app",
   "version": "0.1.0",
-  "homepage":"https://gabgg71.github.io/chat-group",
+  "homepage": "https://gabgg71.github.io/chat-group",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.1.2",
+    "gh-pages": "^5.0.0",
     "npm": "^8.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
