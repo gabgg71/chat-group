@@ -89,6 +89,11 @@ export const Channels = ({setMember}) => {
         }))
     }
 
+    const logout=()=>{
+        localStorage.clear();
+        navigate("/login");
+      }
+
     
 
     return (
@@ -161,7 +166,7 @@ export const Channels = ({setMember}) => {
           </p>
           </button>
           <p className='line'>________________</p>
-          <button className="inline red" onClick={()=>{window.location.href = "/";}}>
+          <button className="inline red" onClick={logout}>
           <span class="material-icons">logout</span>
           <p>
             Logout
