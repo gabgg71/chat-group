@@ -228,6 +228,11 @@ body{
   }
 }
 
+.underl{
+  text-decoration: underline;
+  color: #173cbe;
+}
+
 .exit{
   position: absolute;
   right: 10%;

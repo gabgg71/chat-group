@@ -14,7 +14,8 @@ export const Header = () => {
   }
 
   const logout=()=>{
-    window.location.href = "/";
+    localStorage.clear();
+    navigate("/login");
   }
   return (
     <div className="header">

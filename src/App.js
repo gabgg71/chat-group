@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 
 function App() {
   const [socket, setSocket] = useState(null);
+  const [iniSoc, setIniS] = useState();
   const [focusCh, setFocus] = useState({});
   let [permitir, setPermitir] = useState(false)
   let [channels, setChannels] = useState(store.getState().channel);
@@ -44,21 +45,12 @@ function App() {
     }
   }
 
-  useEffect(async () => {
-    const un = store.subscribe(() => {
-      setChannels({
-        channels: store.getState().channel
-      });
-    });
-    const socket = io(process.env.REACT_SERVER, {
-      cors: { origin: '*' },
-      "transports": ["websocket"],
-      "autoConnect": false,
+  const conectarse=()=>{
+    const socket = io("https://group-chat-backend.glitch.me/", {
+      cors: { origin: '*' }
     });
 
     setSocket(socket);
-
-
     socket.connect();
 
     socket.on('connect', () => {
@@ -112,14 +104,26 @@ function App() {
       console.log('Me desconecto');
     });
 
+  }
+
+  useEffect(async () => {
+    const un = store.subscribe(() => {
+      setChannels({
+        channels: store.getState().channel
+      });
+    });
+    conectarse();
+    
+    
+
     return () => {
       un();
       socket.disconnect();
     };
-  }, []);
+  }, [iniSoc]);
 
   return (
-    <currentContext.Provider value={{ focusCh, setFocus, escuchando, setEscucho }}>
+    <currentContext.Provider value={{ focusCh, setFocus, escuchando, setEscucho , conectarse}}>
       <userContext.Provider value={{ socket, permitir, setPermitir, cambiaTema }}>
         <AppRouter />
       </userContext.Provider>

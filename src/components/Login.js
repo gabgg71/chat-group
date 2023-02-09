@@ -19,7 +19,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { socket, setPermitir, cambiaTema } = useContext(userContext);
-  const { escuchando, setEscucho } = useContext(currentContext);
+  const { escuchando, setEscucho, conectarse } = useContext(currentContext);
   const dispatch = useDispatch();
   let [channels, setChannels] = useState(store.getState().channel);
   let [searchParams, setSearchParams] = useSearchParams();
@@ -53,6 +53,8 @@ export const Login = () => {
       let salida= await respuesta.json();
       let body = salida.resp;
       if(body.token){
+        //setIniS(true);
+       // conectarse();
         dispatch( startLoginGoogle( body.user, body.uid, body.token) )
         dispatch(startLoadChannel()).then(()=>{
           comunicarse();
@@ -102,7 +104,7 @@ export const Login = () => {
     dispatch(startLogin( lEmail, lPassword )).then((resp)=>{
       if(resp && resp.payload.token){
         dispatch( startLoadChannel()).then(()=>{
-          //setChannels(store.getState().channel)
+
           comunicarse();
           setPermitir(true);
           navigate('/profile');
@@ -175,7 +177,7 @@ highlight
           ></img>
         </div>
         <p className="grey">
-          Dont you have an account yet? <a href="/register">Register</a>
+          Dont you have an account yet? <a className='underl' onClick={()=>{navigate("/register")}}>Register</a>
         </p>
       </div>
       
