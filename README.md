@@ -8,11 +8,11 @@
 
 <div align="center">
   <h3>
-    <a href="https://{your-demo-link.your-domain}">
+    <a href="https://gabgg71.github.io/chat-group">
       Demo
     </a>
     <span> | </span>
-    <a href="https://{your-url-to-the-solution}">
+    <a href="https://github.com/gabgg71/chat-group">
       Solution
     </a>
     <span> | </span>
@@ -63,7 +63,7 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [N
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/gabgg71/authentication-app
+$ git clone https://github.com/gabgg71/chat-group
 
 # Install dependencies
 $ npm install
